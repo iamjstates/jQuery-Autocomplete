@@ -51,7 +51,7 @@
             DOWN: 40
         };
 
-    function Autocomplete(el, options) {
+    function customAutocomplete(el, options) {
         var noop = $.noop,
             that = this,
             defaults = {
@@ -66,7 +66,7 @@
                 maxHeight: 300,
                 deferRequestBy: 0,
                 params: {},
-                formatResult: Autocomplete.formatResult,
+                formatResult: customAutocomplete.formatResult,
                 delimiter: null,
                 zIndex: 9999,
                 type: 'GET',
@@ -122,16 +122,16 @@
         that.setOptions(options);
     }
 
-    Autocomplete.utils = utils;
+    customAutocomplete.utils = utils;
 
-    $.Autocomplete = Autocomplete;
+    $.customAutocomplete = customAutocomplete;
 
-    Autocomplete.formatResult = function (suggestion, currentValue) {
+    customAutocomplete.formatResult = function (suggestion, currentValue) {
         // Do not replace anything if there current value is empty
         if (!currentValue) {
             return suggestion.value;
         }
-        
+
         var pattern = '(' + utils.escapeRegExChars(currentValue) + ')';
 
         return suggestion.value
@@ -143,7 +143,7 @@
             .replace(/&lt;(\/?strong)&gt;/g, '<$1>');
     };
 
-    Autocomplete.prototype = {
+    customAutocomplete.prototype = {
 
         killerFn: null,
 
@@ -168,7 +168,7 @@
             that.noSuggestionsContainer = $('<div class="autocomplete-no-suggestion"></div>')
                                           .html(this.options.noSuggestionNotice).get(0);
 
-            that.suggestionsContainer = Autocomplete.utils.createNode(options.containerClass);
+            that.suggestionsContainer = customAutocomplete.utils.createNode(options.containerClass);
 
             container = $(that.suggestionsContainer);
 
@@ -225,7 +225,7 @@
         onBlur: function () {
             this.enableKillerFn();
         },
-        
+
         abortAjax: function () {
             var that = this;
             if (that.currentRequest) {
@@ -354,8 +354,8 @@
             that.stopKillSuggestions();
             that.intervalId = window.setInterval(function () {
                 if (that.visible) {
-                    // No need to restore value when 
-                    // preserveInput === true, 
+                    // No need to restore value when
+                    // preserveInput === true,
                     // because we did not change it
                     if (!that.options.preserveInput) {
                         that.el.val(that.currentValue);
@@ -363,7 +363,7 @@
 
                     that.hide();
                 }
-                
+
                 that.stopKillSuggestions();
             }, 50);
         },
@@ -962,7 +962,7 @@
     };
 
     // Create chainable jQuery plugin:
-    $.fn.autocomplete = $.fn.devbridgeAutocomplete = function (options, args) {
+    $.fn.customAutocomplete = $.fn.devbridgeAutocomplete = function (options, args) {
         var dataKey = 'autocomplete';
         // If function invoked without argument return
         // instance of the first matched element:
@@ -983,7 +983,7 @@
                 if (instance && instance.dispose) {
                     instance.dispose();
                 }
-                instance = new Autocomplete(this, options);
+                instance = new customAutocomplete(this, options);
                 inputElement.data(dataKey, instance);
             }
         });
